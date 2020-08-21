@@ -9,10 +9,10 @@ from flask_cors import CORS
 from PIL import Image
 from io import BytesIO
 import numpy as np
+import gdown
 import os
 import base64
 import tarfile
-import requests
 
 import torch
 import torch.nn.functional as F
@@ -27,9 +27,9 @@ def load_model():
     classes = []
     if not os.path.isfile('./model.tar.gz'):
         url = os.environ["MODEL_URL"].replace("\\", "")
-        r = requests.get(url)
-        bytestream = BytesIO(r.content)
-        tar = tarfile.open(fileobj=bytestream, mode="r:gz")
+        output = 'model.tar.gz'
+        gdown.download(url, output, quiet=False)
+        tar = tarfile.open(output, mode="r:gz")
         for member in tar.getmembers():
             if member.name.endswith(".txt"):
                 print("Classes file is :", member.name)
